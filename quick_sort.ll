@@ -89,40 +89,43 @@ start_label:
 
 while_label:
     ; find the first element greater than the pivot (from start)
-    ; while(global_data_array[i] <= pivot && i < high)
 
-    %i_value_1 = load i32, ptr %i
-    %i_value_ptr = getelementptr inbounds [10 x i32], ptr @global_data_array, i64 0, i32 %i_value_1
+    ; while(global_data_array[i] <= pivot && i < high)
+    %i_1 = load i32, ptr %i
+    %i_value_ptr = getelementptr inbounds [10 x i32], ptr @global_data_array, i64 0, i32 %i_1
     ; global_data_array[i]
     %arr_i_value = load i32, ptr %i_value_ptr
     ; global_data_array[i] <= pivot
     %l_val_pivot_cmp_result = icmp sle i32 %arr_i_value, %pivot
     ; i < high
-    %i_high_cmp_result = icmp slt i32 %i_value_1, %high
+    %i_high_cmp_result = icmp slt i32 %i_1, %high
     %both_cmp_result = and i1 %l_val_pivot_cmp_result, %i_high_cmp_result
     br i1 %both_cmp_result, label %i_incr, label %right_smaller
 
 i_incr:
-    %i_2 = add i32 %i_value_1, 1
+    ; i++
+    %i_2 = add i32 %i_1, 1
     store i32 %i_2, ptr %i
     br label %while_label
 
 right_smaller:
     ; find the first element smaller than the pivot (from last)
+
     ; while(global_data_array[j] > pivot && j > low)
-    %j_value_1 = load i32, ptr %j
-    %j_value_ptr = getelementptr inbounds [10 x i32], ptr @global_data_array, i64 0, i32 %j_value_1
+    %j_1 = load i32, ptr %j
+    %j_value_ptr = getelementptr inbounds [10 x i32], ptr @global_data_array, i64 0, i32 %j_1
     ; global_data_array[j]
     %arr_j_value = load i32, ptr %j_value_ptr
     ; global_data_array[j] > pivot
     %r_val_pivot_cmp_result = icmp sgt i32 %arr_j_value, %pivot
     ; j > low
-    %j_low_cmp_result = icmp sgt i32 %j_value_1, %low
+    %j_low_cmp_result = icmp sgt i32 %j_1, %low
     %both_cmp_result_1 = and i1 %r_val_pivot_cmp_result, %j_low_cmp_result
     br i1 %both_cmp_result_1, label %j_decr, label %swap_i_j
 
 j_decr:
-    %j_2 = sub i32 %j_value_1, 1
+    ;j--
+    %j_2 = sub i32 %j_1, 1
     store i32 %j_2, ptr %j
     br label %right_smaller
 
@@ -143,8 +146,7 @@ end_label:
     %j_5 = load i32, ptr %j
     call void @swap(i32 %low, i32 %j_5)
 
-    %ret_j = load i32, ptr %j
-    ret i32 %ret_j
+    ret i32 %j_5
 }
 
 ; quick sort, low: low index, high: high index
